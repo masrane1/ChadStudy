@@ -68,6 +68,14 @@ export interface IStorage {
   updateAnnouncement(id: number, announcement: Partial<Announcement>): Promise<Announcement | undefined>;
   deleteAnnouncement(id: number): Promise<boolean>;
 
+  // Settings methods
+  getSetting(key: string): Promise<Setting | undefined>;
+  getSettings(keys?: string[]): Promise<Setting[]>;
+  createSetting(setting: InsertSetting): Promise<Setting>;
+  updateSetting(id: number, setting: Partial<Setting>): Promise<Setting | undefined>;
+  updateSettingByKey(key: string, value: string): Promise<Setting | undefined>;
+  deleteSetting(id: number): Promise<boolean>;
+
   // Session store
   sessionStore: any;
 }

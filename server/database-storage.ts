@@ -10,6 +10,7 @@ import {
   comments,
   favorites,
   announcements,
+  settings,
   User,
   Subject,
   Document,
@@ -17,13 +18,15 @@ import {
   Comment,
   Favorite,
   Announcement,
+  Setting,
   InsertUser,
   InsertSubject,
   InsertDocument,
   InsertRating,
   InsertComment,
   InsertFavorite,
-  InsertAnnouncement
+  InsertAnnouncement,
+  InsertSetting
 } from "@shared/schema";
 import { eq, and, like, desc, count, avg } from "drizzle-orm";
 import { scrypt, randomBytes, timingSafeEqual } from "crypto";
