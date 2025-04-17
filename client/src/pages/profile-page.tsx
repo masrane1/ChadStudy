@@ -125,8 +125,11 @@ export default function ProfilePage() {
             <div className="md:col-span-3">
               <Card>
                 <CardHeader>
+                  <h2 className="text-xl font-semibold">Mes documents et paramètres</h2>
+                </CardHeader>
+                <CardContent>
                   <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                    <TabsList className="grid w-full grid-cols-2">
+                    <TabsList className="grid w-full grid-cols-2 mb-4">
                       <TabsTrigger value="favorites">
                         <Book className="mr-2 h-4 w-4" />
                         Mes documents favoris
@@ -136,103 +139,102 @@ export default function ProfilePage() {
                         Informations du compte
                       </TabsTrigger>
                     </TabsList>
-                  </Tabs>
-                </CardHeader>
-                <CardContent>
-                  <TabsContent value="favorites" className="mt-0">
-                    {isLoading ? (
-                      <div className="space-y-4">
-                        {[1, 2, 3].map((i) => (
-                          <div key={i} className="border rounded-lg p-4">
-                            <Skeleton className="h-6 w-3/4 mb-2" />
-                            <Skeleton className="h-4 w-1/4 mb-4" />
-                            <Skeleton className="h-10 w-full" />
-                          </div>
-                        ))}
-                      </div>
-                    ) : favorites && favorites.length > 0 ? (
-                      <div className="space-y-4">
-                        {favorites.map((favorite) => (
-                          <div key={favorite.id} className="border rounded-lg p-4 hover:border-primary-200 transition-colors">
-                            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                              <div>
-                                <div className="flex items-center gap-2 mb-1">
-                                  <span className={`${getSubjectColorClass(favorite.document.subjectColor)} text-xs font-medium px-2.5 py-0.5 rounded`}>
-                                    {favorite.document.subject}
-                                  </span>
-                                  <span className="text-gray-500 text-sm">{favorite.document.year}</span>
+
+                    <TabsContent value="favorites" className="mt-0">
+                      {isLoading ? (
+                        <div className="space-y-4">
+                          {[1, 2, 3].map((i) => (
+                            <div key={i} className="border rounded-lg p-4">
+                              <Skeleton className="h-6 w-3/4 mb-2" />
+                              <Skeleton className="h-4 w-1/4 mb-4" />
+                              <Skeleton className="h-10 w-full" />
+                            </div>
+                          ))}
+                        </div>
+                      ) : favorites && favorites.length > 0 ? (
+                        <div className="space-y-4">
+                          {favorites.map((favorite) => (
+                            <div key={favorite.id} className="border rounded-lg p-4 hover:border-primary-200 transition-colors">
+                              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                                <div>
+                                  <div className="flex items-center gap-2 mb-1">
+                                    <span className={`${getSubjectColorClass(favorite.document.subjectColor)} text-xs font-medium px-2.5 py-0.5 rounded`}>
+                                      {favorite.document.subject}
+                                    </span>
+                                    <span className="text-gray-500 text-sm">{favorite.document.year}</span>
+                                  </div>
+                                  <Link href={`/documents/${favorite.document.id}`}>
+                                    <h3 className="text-lg font-semibold text-gray-900 hover:text-primary-600 transition-colors">
+                                      {favorite.document.title}
+                                    </h3>
+                                  </Link>
+                                  <p className="text-gray-600 text-sm mt-1">{formatFileSize(favorite.document.fileSize)}</p>
                                 </div>
-                                <Link href={`/documents/${favorite.document.id}`}>
-                                  <h3 className="text-lg font-semibold text-gray-900 hover:text-primary-600 transition-colors">
-                                    {favorite.document.title}
-                                  </h3>
-                                </Link>
-                                <p className="text-gray-600 text-sm mt-1">{formatFileSize(favorite.document.fileSize)}</p>
+                                
+                                <Button asChild className="w-full md:w-auto">
+                                  <Link href={`/api/documents/${favorite.document.id}/download`}>
+                                    <Download className="mr-2 h-4 w-4" />
+                                    Télécharger
+                                  </Link>
+                                </Button>
                               </div>
-                              
-                              <Button asChild className="w-full md:w-auto">
-                                <Link href={`/api/documents/${favorite.document.id}/download`}>
-                                  <Download className="mr-2 h-4 w-4" />
-                                  Télécharger
-                                </Link>
-                              </Button>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="text-center py-10">
+                          <div className="inline-flex justify-center items-center w-16 h-16 bg-gray-100 rounded-full mb-4">
+                            <Book className="h-8 w-8 text-gray-400" />
+                          </div>
+                          <h3 className="text-lg font-semibold text-gray-700 mb-2">Aucun favori</h3>
+                          <p className="text-gray-500 mb-6">Vous n'avez pas encore de documents favoris.</p>
+                          <Button asChild>
+                            <Link href="/">
+                              Parcourir les documents
+                            </Link>
+                          </Button>
+                        </div>
+                      )}
+                    </TabsContent>
+                    
+                    <TabsContent value="account" className="mt-0">
+                      <div className="space-y-6">
+                        <div>
+                          <h3 className="text-lg font-semibold mb-4">Informations personnelles</h3>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-1">Nom complet</label>
+                              <div className="p-2 bg-gray-50 rounded border">{user?.fullName}</div>
+                            </div>
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-1">Nom d'utilisateur</label>
+                              <div className="p-2 bg-gray-50 rounded border">{user?.username}</div>
+                            </div>
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                              <div className="p-2 bg-gray-50 rounded border">{user?.email}</div>
+                            </div>
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-1">Rôle</label>
+                              <div className="p-2 bg-gray-50 rounded border capitalize">{user?.role}</div>
                             </div>
                           </div>
-                        ))}
-                      </div>
-                    ) : (
-                      <div className="text-center py-10">
-                        <div className="inline-flex justify-center items-center w-16 h-16 bg-gray-100 rounded-full mb-4">
-                          <Book className="h-8 w-8 text-gray-400" />
                         </div>
-                        <h3 className="text-lg font-semibold text-gray-700 mb-2">Aucun favori</h3>
-                        <p className="text-gray-500 mb-6">Vous n'avez pas encore de documents favoris.</p>
-                        <Button asChild>
-                          <Link href="/">
-                            Parcourir les documents
-                          </Link>
-                        </Button>
-                      </div>
-                    )}
-                  </TabsContent>
-                  
-                  <TabsContent value="account" className="mt-0">
-                    <div className="space-y-6">
-                      <div>
-                        <h3 className="text-lg font-semibold mb-4">Informations personnelles</h3>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Nom complet</label>
-                            <div className="p-2 bg-gray-50 rounded border">{user?.fullName}</div>
-                          </div>
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Nom d'utilisateur</label>
-                            <div className="p-2 bg-gray-50 rounded border">{user?.username}</div>
-                          </div>
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                            <div className="p-2 bg-gray-50 rounded border">{user?.email}</div>
-                          </div>
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Rôle</label>
-                            <div className="p-2 bg-gray-50 rounded border capitalize">{user?.role}</div>
+                        
+                        <div className="pt-4 border-t border-gray-200">
+                          <h3 className="text-lg font-semibold mb-4">Paramètres du compte</h3>
+                          <div className="space-y-4">
+                            <Button variant="outline">
+                              Changer de mot de passe
+                            </Button>
+                            <Button variant="outline" className="text-red-600 hover:text-red-700">
+                              Supprimer mon compte
+                            </Button>
                           </div>
                         </div>
                       </div>
-                      
-                      <div className="pt-4 border-t border-gray-200">
-                        <h3 className="text-lg font-semibold mb-4">Paramètres du compte</h3>
-                        <div className="space-y-4">
-                          <Button variant="outline">
-                            Changer de mot de passe
-                          </Button>
-                          <Button variant="outline" className="text-red-600 hover:text-red-700">
-                            Supprimer mon compte
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-                  </TabsContent>
+                    </TabsContent>
+                  </Tabs>
                 </CardContent>
               </Card>
             </div>
