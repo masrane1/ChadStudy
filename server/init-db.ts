@@ -118,14 +118,7 @@ async function initDatabase() {
   console.log('Database initialization complete!');
 }
 
-// Auto-execute if this file is run directly
-if (require.main === module) {
-  initDatabase()
-    .then(() => process.exit(0))
-    .catch(error => {
-      console.error('Error initializing database:', error);
-      process.exit(1);
-    });
-}
+// Pour ES modules, nous n'avons pas besoin de cette vérification
+// car le script est toujours importé plutôt qu'exécuté directement
 
 export default initDatabase;
