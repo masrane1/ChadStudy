@@ -3,6 +3,12 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --chad-blue: #002664;
+    --chad-yellow: #FFCE00;
+    --chad-red: #C60C30;
+  }
+
   * {
     @apply border-border;
   }
@@ -10,4 +16,37 @@
   body {
     @apply font-sans antialiased bg-background text-foreground;
   }
+}
+
+/* Couleurs du drapeau tchadien */
+.text-tchad-blue {
+  color: var(--chad-blue);
+}
+
+.bg-tchad-blue {
+  background-color: var(--chad-blue);
+}
+
+.text-tchad-yellow {
+  color: var(--chad-yellow);
+}
+
+.bg-tchad-yellow {
+  background-color: var(--chad-yellow);
+}
+
+.text-tchad-red {
+  color: var(--chad-red);
+}
+
+.bg-tchad-red {
+  background-color: var(--chad-red);
+}
+
+.tchad-gradient {
+  background: linear-gradient(to right, var(--chad-blue), var(--chad-yellow), var(--chad-red));
+}
+
+.tchad-border {
+  border-image: linear-gradient(to right, var(--chad-blue), var(--chad-yellow), var(--chad-red)) 1;
 }

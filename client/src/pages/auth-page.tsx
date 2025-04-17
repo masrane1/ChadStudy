@@ -112,6 +112,13 @@ export default function AuthPage() {
                   <p className="text-gray-600">
                     Connectez-vous ou créez un compte pour accéder à tous nos documents
                   </p>
+                  <div className="p-3 mb-4 rounded-md bg-tchad-yellow/10 border border-tchad-yellow/20">
+                    <p className="text-sm text-tchad-blue font-medium">
+                      <strong>Identifiants de connexion:</strong><br/>
+                      Admin: username: <span className="font-semibold">admin</span>, password: <span className="font-semibold">admindouleinnova</span><br/>
+                      Élève: username: <span className="font-semibold">eleve</span>, password: <span className="font-semibold">elevedouleinnova</span>
+                    </p>
+                  </div>
                 </div>
                 
                 <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
@@ -319,7 +326,7 @@ export default function AuthPage() {
               </div>
               
               {/* Right side: Hero */}
-              <div className="bg-gradient-to-br from-primary-600 to-primary-800 text-white p-6 md:p-10 flex flex-col justify-center">
+              <div className="tchad-gradient text-white p-6 md:p-10 flex flex-col justify-center">
                 <div className="rounded-full bg-white/10 w-16 h-16 flex items-center justify-center mb-6">
                   <BookOpen className="h-8 w-8" />
                 </div>
