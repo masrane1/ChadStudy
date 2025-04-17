@@ -69,7 +69,7 @@ export interface IStorage {
   deleteAnnouncement(id: number): Promise<boolean>;
 
   // Session store
-  sessionStore: session.SessionStore;
+  sessionStore: any;
 }
 
 export class MemStorage implements IStorage {
@@ -92,7 +92,7 @@ export class MemStorage implements IStorage {
   private announcementIdCounter: number;
 
   // Session store
-  public sessionStore: session.SessionStore;
+  public sessionStore: any;
 
   constructor() {
     // Initialize collections
