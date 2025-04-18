@@ -542,6 +542,74 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to delete announcement" });
     }
   });
+  
+  // Settings routes - Public access for reading settings
+  app.get("/api/settings", async (req, res) => {
+    try {
+      const settings = await storage.getSettings();
+      res.json(settings);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch settings" });
+    }
+  });
+
+  app.get("/api/settings/:key", async (req, res) => {
+    try {
+      const setting = await storage.getSetting(req.params.key);
+      if (!setting) {
+        return res.status(404).json({ message: "Setting not found" });
+      }
+      res.json(setting);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch setting" });
+    }
+  });
+
+  // Admin settings routes - Restricted to admin users
+  app.post("/api/admin/settings", async (req, res) => {
+    try {
+      const { key, value } = req.body;
+      if (!key || value === undefined) {
+        return res.status(400).json({ message: "Key and value are required" });
+      }
+      
+      const setting = await storage.updateSettingByKey(key, value);
+      res.json(setting);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to create/update setting" });
+    }
+  });
+
+  app.put("/api/admin/settings/:key", async (req, res) => {
+    try {
+      const { value } = req.body;
+      if (value === undefined) {
+        return res.status(400).json({ message: "Value is required" });
+      }
+      
+      const setting = await storage.updateSettingByKey(req.params.key, value);
+      res.json(setting);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to update setting" });
+    }
+  });
+
+  app.delete("/api/admin/settings/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid ID" });
+      }
+      
+      const success = await storage.deleteSetting(id);
+      if (!success) {
+        return res.status(404).json({ message: "Setting not found" });
+      }
+      res.status(200).json({ message: "Setting deleted successfully" });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to delete setting" });
+    }
+  });
 
   const httpServer = createServer(app);
   return httpServer;
