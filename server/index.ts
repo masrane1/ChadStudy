@@ -2,6 +2,7 @@ import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import initDatabase from "./init-db";
+import initSettings from "./init-settings";
 
 const app = express();
 app.use(express.json());
@@ -40,6 +41,9 @@ app.use((req, res, next) => {
 (async () => {
   // Initialize database with default data
   await initDatabase();
+  
+  // Initialize settings
+  await initSettings();
   
   const server = await registerRoutes(app);
 

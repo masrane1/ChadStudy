@@ -1,5 +1,5 @@
 import { db } from './db';
-import { users, subjects, documents, announcements } from '@shared/schema';
+import { users, subjects, documents, announcements, settings } from '@shared/schema';
 import { scrypt, randomBytes } from 'crypto';
 import { promisify } from 'util';
 
@@ -115,6 +115,33 @@ async function initDatabase() {
   }).returning();
 
   console.log(`Created announcement: ${announcement.title}`);
+  
+  // Create default settings for footer
+  const defaultSettings = [
+    { key: 'footer_email', value: 'contact@bachub-tchad.com' },
+    { key: 'footer_phone', value: '+235 XX XX XX XX' },
+    { key: 'footer_address', value: 'N\'Djamena, Tchad' },
+    { key: 'social_facebook', value: 'https://facebook.com' },
+    { key: 'social_twitter', value: 'https://twitter.com' },
+    { key: 'social_instagram', value: 'https://instagram.com' },
+    { key: 'footer_description', value: 'Votre plateforme de ressources éducatives pour réussir votre baccalauréat.' },
+    { key: 'footer_copyright', value: '© {year} Bac-Hub Tchad. Tous droits réservés.' },
+    { 
+      key: 'footer_quick_links', 
+      value: JSON.stringify([
+        { name: 'Accueil', href: '/' },
+        { name: 'Documents', href: '/' },
+        { name: 'À propos', href: '/' },
+        { name: 'Contact', href: '/' },
+      ])
+    }
+  ];
+
+  for (const setting of defaultSettings) {
+    const [createdSetting] = await db.insert(settings).values(setting).returning();
+    console.log(`Created setting: ${createdSetting.key}`);
+  }
+  
   console.log('Database initialization complete!');
 }
 

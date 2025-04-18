@@ -7,6 +7,7 @@ import {
   Megaphone,
   LogOut,
   ChevronRight,
+  Settings,
 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 
@@ -42,6 +43,12 @@ export default function AdminSidebar() {
       icon: <Megaphone className="h-5 w-5" />,
       href: "/admin/announcements",
       active: location === "/admin/announcements",
+    },
+    {
+      title: "Paramètres du site",
+      icon: <Settings className="h-5 w-5" />,
+      href: "/admin/settings",
+      active: location === "/admin/settings",
     },
   ];
   

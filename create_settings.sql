@@ -1,0 +1,1 @@
+CREATE TABLE settings (id SERIAL PRIMARY KEY, key TEXT, value TEXT);

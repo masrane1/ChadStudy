@@ -12,6 +12,7 @@ import AdminDashboard from "@/pages/admin/dashboard";
 import DocumentManagement from "@/pages/admin/document-management";
 import UserManagement from "@/pages/admin/user-management";
 import AnnouncementManagement from "@/pages/admin/announcement-management";
+import SettingsManagement from "@/pages/admin/settings-management";
 import { ProtectedRoute } from "@/lib/protected-route";
 
 function Router() {
@@ -25,6 +26,7 @@ function Router() {
       <ProtectedRoute path="/admin/documents" component={DocumentManagement} />
       <ProtectedRoute path="/admin/users" component={UserManagement} />
       <ProtectedRoute path="/admin/announcements" component={AnnouncementManagement} />
+      <ProtectedRoute path="/admin/settings" component={SettingsManagement} />
       <Route component={NotFound} />
     </Switch>
   );
