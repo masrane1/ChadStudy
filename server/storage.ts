@@ -1,7 +1,8 @@
 import {
   User, InsertUser, Subject, InsertSubject, Document,
   InsertDocument, Rating, InsertRating, Comment, InsertComment,
-  Favorite, InsertFavorite, Announcement, InsertAnnouncement
+  Favorite, InsertFavorite, Announcement, InsertAnnouncement,
+  Setting, InsertSetting
 } from "@shared/schema";
 import session from "express-session";
 import createMemoryStore from "memorystore";
@@ -89,6 +90,7 @@ export class MemStorage implements IStorage {
   private comments: Map<number, Comment>;
   private favorites: Map<number, Favorite>;
   private announcements: Map<number, Announcement>;
+  private settings: Map<number, Setting>;
 
   // ID counters
   private userIdCounter: number;
@@ -98,6 +100,7 @@ export class MemStorage implements IStorage {
   private commentIdCounter: number;
   private favoriteIdCounter: number;
   private announcementIdCounter: number;
+  private settingIdCounter: number;
 
   // Session store
   public sessionStore: any;
@@ -111,6 +114,7 @@ export class MemStorage implements IStorage {
     this.comments = new Map();
     this.favorites = new Map();
     this.announcements = new Map();
+    this.settings = new Map();
 
     // Initialize ID counters
     this.userIdCounter = 1;
@@ -120,6 +124,7 @@ export class MemStorage implements IStorage {
     this.commentIdCounter = 1;
     this.favoriteIdCounter = 1;
     this.announcementIdCounter = 1;
+    this.settingIdCounter = 1;
 
     // Initialize session store
     this.sessionStore = new MemoryStore({
@@ -530,6 +535,64 @@ export class MemStorage implements IStorage {
 
   async deleteAnnouncement(id: number): Promise<boolean> {
     return this.announcements.delete(id);
+  }
+
+  // Settings methods
+  async getSetting(key: string): Promise<Setting | undefined> {
+    return Array.from(this.settings.values()).find(setting => setting.key === key);
+  }
+
+  async getSettings(keys?: string[]): Promise<Setting[]> {
+    const allSettings = Array.from(this.settings.values());
+    if (keys && keys.length > 0) {
+      return allSettings.filter(setting => keys.includes(setting.key));
+    }
+    return allSettings;
+  }
+
+  async createSetting(setting: InsertSetting): Promise<Setting> {
+    const id = this.settingIdCounter++;
+    const newSetting: Setting = {
+      ...setting,
+      id,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    this.settings.set(id, newSetting);
+    return newSetting;
+  }
+
+  async updateSetting(id: number, settingData: Partial<Setting>): Promise<Setting | undefined> {
+    const setting = this.settings.get(id);
+    if (!setting) return undefined;
+
+    const updatedSetting = {
+      ...setting,
+      ...settingData,
+      updatedAt: new Date()
+    };
+    this.settings.set(id, updatedSetting);
+    return updatedSetting;
+  }
+
+  async updateSettingByKey(key: string, value: string): Promise<Setting | undefined> {
+    const setting = await this.getSetting(key);
+    if (!setting) {
+      // Si le paramètre n'existe pas, on le crée
+      return await this.createSetting({ key, value });
+    }
+    
+    const updatedSetting = {
+      ...setting,
+      value,
+      updatedAt: new Date()
+    };
+    this.settings.set(setting.id, updatedSetting);
+    return updatedSetting;
+  }
+
+  async deleteSetting(id: number): Promise<boolean> {
+    return this.settings.delete(id);
   }
 }
 

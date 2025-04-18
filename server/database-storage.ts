@@ -28,7 +28,7 @@ import {
   InsertAnnouncement,
   InsertSetting
 } from "@shared/schema";
-import { eq, and, like, desc, count, avg } from "drizzle-orm";
+import { eq, and, like, desc, count, avg, inArray } from "drizzle-orm";
 import { scrypt, randomBytes, timingSafeEqual } from "crypto";
 import { promisify } from "util";
 
@@ -363,6 +363,53 @@ export class DatabaseStorage implements IStorage {
 
   async deleteAnnouncement(id: number): Promise<boolean> {
     await db.delete(announcements).where(eq(announcements.id, id));
+    return true;
+  }
+
+  // SETTINGS METHODS
+  async getSetting(key: string): Promise<Setting | undefined> {
+    const [setting] = await db.select().from(settings).where(eq(settings.key, key));
+    return setting;
+  }
+
+  async getSettings(keys?: string[]): Promise<Setting[]> {
+    if (keys && keys.length > 0) {
+      return await db.select().from(settings).where(inArray(settings.key, keys));
+    }
+    return await db.select().from(settings);
+  }
+
+  async createSetting(settingData: InsertSetting): Promise<Setting> {
+    const [setting] = await db.insert(settings).values(settingData).returning();
+    return setting;
+  }
+
+  async updateSetting(id: number, settingData: Partial<Setting>): Promise<Setting | undefined> {
+    const [updatedSetting] = await db
+      .update(settings)
+      .set(settingData)
+      .where(eq(settings.id, id))
+      .returning();
+    return updatedSetting;
+  }
+
+  async updateSettingByKey(key: string, value: string): Promise<Setting | undefined> {
+    const setting = await this.getSetting(key);
+    if (!setting) {
+      // Si le paramètre n'existe pas, on le crée
+      return await this.createSetting({ key, value });
+    }
+    
+    const [updatedSetting] = await db
+      .update(settings)
+      .set({ value, updatedAt: new Date() })
+      .where(eq(settings.key, key))
+      .returning();
+    return updatedSetting;
+  }
+
+  async deleteSetting(id: number): Promise<boolean> {
+    await db.delete(settings).where(eq(settings.id, id));
     return true;
   }
 }
